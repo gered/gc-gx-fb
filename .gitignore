@@ -1,0 +1,6 @@
+obj/
+.idea/
+*.dol
+*.elf
+*.map
+
