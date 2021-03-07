@@ -131,13 +131,16 @@ static void gx_init_modelview(void) {
 }
 
 static void copy_framebuffer_to_texture(void) {
-	// gamecube/wii texture memory is organized in 32-byte tiles. for 32-bit ARGB-format textures, as we are using,
-	// this means the 32-bit space comprises a 4x4 tile. so we need to copy our contiguous 2d source framebuffer
-	// and convert it on the fly to this 4x4 tile layout.
-	// however, one extra wrinkle is that for 32-bit ARGB-format textures, the 32-byte tile size actually only is
-	// large enough to hold half of a 4x4 tile. so, what the gamecube hardware does instead for 32-bit ARGB format is
-	// to split the pixels into two halves. the first 32-byte 4x4 tile holds pixel data containing alpha+red only, and
-	// the second 32-byte 4x4 tile holds pixel data containing green+blue only.
+	/*
+	 gamecube/wii texture memory is organized in 32-byte tiles. different pixel formats will allow for a varying
+	 amount of pixels to be contained within each 32-byte tile. for 32-bit ARGB-format textures, as we are using,
+	 this is slightly more complicated ...
+
+	 basically, in our case we need to write *TWO* 32-byte tiles in succession. for 32-bit ARGB-format textures, the
+	 gamecube assumes that the first 32-byte tile will contain a 4x4 pixel area where the pixels are 16-bit only and
+	 contain only the alpha+red components. the second 32-byte tile will be for the same 4x4 pixel area, but will
+	 contain 16-bit pixels containing only the green+blue components
+	*/
 
 	// reading 4 source ARGB-format pixel rows per iteration
 	u16 *src_1 = (u16*)&framebuffer[0];
