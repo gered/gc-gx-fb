@@ -211,7 +211,11 @@ int fb_init(GXRModeObj *rmode, int width, int height) {
 		return 1;
 	if (width <= 0 || width > (rmode->fbWidth / 2))
 		return 1;
+	if (width % 4)
+		return 1;
 	if (height <= 0 || height > rmode->efbHeight)
+		return 1;
+	if (height % 4)
 		return 1;
 
 	video_init(rmode);
