@@ -6,7 +6,7 @@
 #include "gxfb.h"
 
 int main(int argc, char *argv[]) {
-	DEBUG_Init(GDBSTUB_DEVICE_USB, 1);
+	//DEBUG_Init(GDBSTUB_DEVICE_USB, 1);
 	//_break();
 
 	GXRModeObj *rmode;
