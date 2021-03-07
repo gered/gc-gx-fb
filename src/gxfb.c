@@ -123,6 +123,13 @@ static void gx_init_projection(GXRModeObj *rmode) {
 	GX_LoadProjectionMtx(perspective, GX_ORTHOGRAPHIC);
 }
 
+static void gx_init_modelview(void) {
+	// set up constant modelview matrix for rending our quad with
+	guMtxIdentity(modelview);
+	guMtxTransApply(modelview, modelview, 0.0, 0.0, -5.0);
+	GX_LoadPosMtxImm(modelview, GX_PNMTX0);
+}
+
 static void copy_framebuffer_to_texture(void) {
 	// gamecube/wii texture memory is organized in 32-byte tiles. for 32-bit ARGB-format textures, as we are using,
 	// this means the 32-bit space comprises a 4x4 tile. so we need to copy our contiguous 2d source framebuffer
@@ -226,6 +233,7 @@ int fb_init(GXRModeObj *rmode, int width, int height) {
 	gx_init_texture(width, height);
 	gx_init_vertex_format();
 	gx_init_projection(rmode);
+	gx_init_modelview();
 
 	// allocate application-accessible framebuffer. ARGB-format pixels
 	framebuffer_size = width * height * 4;
@@ -242,11 +250,6 @@ int fb_init(GXRModeObj *rmode, int width, int height) {
 	// this will center it on screen if the framebuffer is smaller than the screen mode
 	quad_x_offset = ((rmode->fbWidth / 2) - width) / 2;
 	quad_y_offset = ((rmode->efbHeight) - height) / 2;
-
-	// set up constant modelview matrix for rending our quad with
-	guMtxIdentity(modelview);
-	guMtxTransApply(modelview, modelview, 0.0, 0.0, -5.0);
-	GX_LoadPosMtxImm(modelview, GX_PNMTX0);
 
 	return 0;
 }
